@@ -1,0 +1,10 @@
+{
+	"name":"nodeChat1",
+	"description":"node Chat app using node.js, socket.io,express",
+	"version":"0.0.1",
+	"dependencies":
+	{
+		"express":"*",
+		"socket.io":"*"
+	}
+}
