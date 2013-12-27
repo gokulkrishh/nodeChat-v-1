@@ -1,16 +1,13 @@
-var express = require('express');
-var io = require('socket.io');
-var fs = require('fs');
+var express = require('express') //required express module
+  , app = express()
+  , server = app.listen(1337); //creating a server with express using http module ref
+var io = require('socket.io').listen(server);//required socket.io module which listen to http server
 
+/* this and above is same
+var express = require(“express”);
 var app = express();
-var obj = JSON.parse(fs.readFileSync("./configPort.json"));
-var host = obj.host;
-var port = obj.port;
+var socket = require(‘socket.io’);
+var server = app.listen(4000);
+var io = socket.listen(server); */
 
-app.get('/',function(req,res) 
-{
-	res.sendfile(__dirname + '/index.html');// send a file in current dir that is index.html
-});
-app.listen(port,host);
-console.log("Listening to "+host+":"+port);
 
