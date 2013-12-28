@@ -81,29 +81,48 @@ $(document).ready(function()
     <script type="text/javascript">
     	$(document).ready(function()
     	{
-    		var username = prompt("Whats your Name");
     		var socket = io.connect("127.0.0.1:1337");
-    		$("#userContainer").append("<div class=''>"+username+"</div>");
+    		
+    		var username = prompt("Whats your Name");
+    		socket.emit("userName",username);
+    		$user = $("#onUsers");
     		//emitting msg to server
     		$("#sendMsg").click(function()
     		{
     			var message = $("#message").val();
     			//alert(message);
     			$("#message").val("");
-    			var obj = {"username":username,"msg":message};
-    			socket.emit("userMsg",obj);
+    			var msg = {"msg":message}
+    			socket.emit("userMsg",msg);
     		});
     		// listening to updateMsg from server emit
-    		socket.on("updateMsg",function(data) 
+    		socket.on("updateMsg",function(content,username) 
     		{
-    			$("#messageContainer").append("<div class='msgAppend'>"+data.username+": "+data.msg+"</div>");	
+    			$("#messageContainer").append("<div class='msgAppend'>"+username+": "+content.msg+"</div>");	
+    			//console.log(username);
     		});
+    		socket.on("onlineUsers",function(user)
+    		{
+    				//console.log(user);
+    				UserOnline(user);
+    				//alert(user.userOnline);
+    				//console.log("after logged in",user.userOnline);
+    		});
+    		function UserOnline(user) 
+    		{
+    			$user.html(user.userOnline);
+    		}
     		socket.on("leftMsg",function(data) 
     		{
-    				$("#messageContainer").append("<div class='msgLeft'>"+data+"</div>");
-    				//console.log(data);
+    			$("#userContainer").empty();
+    			//console.log(data);
+    			$.each(data, function(index, ele) 
+                {
+                    $('#userContainer').append('<div>' + index + '</div>');
+                });
+    			//console.log(data);
     		});
-    		$(".close").click(function()
+            $(".close").click(function()
     		{
 		    	socket.disconnect(); 
         		$(".chat-container").css("visibility","hidden");
@@ -115,7 +134,8 @@ $(document).ready(function()
 	<h1 align="center">Chat here</h1>
 <div id="container" style='float:left;margin:0'>
     <div id="cwindow1" class="edit-box1" style="">
-        <h4 align="center">Online Users</h4>
+        <h4 align="center"><span id="onUsers">0</span> Online Users
+        </h4>
         <div class="ans" style="text-align:left;margin-left:10px" id="userContainer"></div>
     </div>
 </div>
