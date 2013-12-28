@@ -13,7 +13,7 @@ h2{position:relative;text-align:center}
 border-bottom-left-radius:4px;-webkit-border-radius: 1px;-moz-border-radius: 4px;-ms-border-radius: 4px;-o-border-radius: 4px;
 position: relative;border-radius: 2px;margin-top:-16px;overflow-y:scroll;}
 
-.edit-box1{background:#ccc;width:250px;height: auto;bottom:0;top:0;border-top: 1px solid #aaa;border-bottom-color:#fff;
+.edit-box1{background:#ccc;width:250px;height: auto;bottom:0;top:0;border-top: 1px solid #aaa;border-bottom-color:#fff;left: 0;
 border-bottom-left-radius:4px;-webkit-border-radius: 1px;-moz-border-radius: 4px;-ms-border-radius: 4px;-o-border-radius: 4px;
 position: relative;border-radius: 2px;position: absolute;margin-top:0;overflow-y:scroll;}
 
@@ -72,6 +72,7 @@ $(document).ready(function()
     	if(e.keyCode==13)
     	{
     		$("#sendMsg").click();
+        	$('#cwindow').scrollTop(30000);
     	}
     }); 
 });           
@@ -80,9 +81,9 @@ $(document).ready(function()
     <script type="text/javascript">
     	$(document).ready(function()
     	{
-    		var socket = io.connect("127.0.0.1:1337");
-    		
     		var username = prompt("Whats your Name");
+    		var socket = io.connect("127.0.0.1:1337");
+    		$("#userContainer").append("<div class=''>"+username+"</div>");
     		//emitting msg to server
     		$("#sendMsg").click(function()
     		{
@@ -112,6 +113,12 @@ $(document).ready(function()
   </head>
 <body>
 	<h1 align="center">Chat here</h1>
+<div id="container" style='float:left;margin:0'>
+    <div id="cwindow1" class="edit-box1" style="">
+        <h4 align="center">Online Users</h4>
+        <div class="ans" style="text-align:left;margin-left:10px" id="userContainer"></div>
+    </div>
+</div>
 <div id="cwrapper" class="chat-container">
     <h2 class="chatheader" style="cursor: pointer;">
         <span style="font-size:16px;margin-left:-90px">Chat here</span>

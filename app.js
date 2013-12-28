@@ -15,10 +15,6 @@ app.get('/',function(req,res)
 	res.sendfile(__dirname + '/index.html');
 	//console.log(__dirname);
 });
-app.get('/images',function(req,res)
-{
-	res.send(__dirname + '/images');
-});
 io.sockets.on("connection",function(socket) 
 {
 	//console.log(socket);
