@@ -1,9 +1,129 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Connection Counter</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <title>My Chat Room</title>
+    <style rel="text/stylesheet">
+h2{position:relative;text-align:center}
+.form-control{height: inherit;width: 300px;position: relative;left: 40%;top: 20px;}
+#postMessageButton{position: relative;left: 45%;top: 40px;}
+#messagesContainer{text-align:center;font-size:14px}
+.chat-container{position: absolute;bottom: 0;left: 60%;overflow: hidden;z-index:100}
+.chatheader{width: 255px;color:#fff;background-color:#333333;padding:12px 10px;font-size:1.1em;overflow: visible;font-family:Arial,Helvetica,sans-serif;font-weight: 200;border: 1px solid #aaa;border-radius: 4px;border-bottom: 0px;border-bottom:1px;}
+.edit-box{background: rgb(204, 204, 204);width: 276px;height: 270px;border-top: 1px solid #aaa;border-bottom-color:#fff;
+border-bottom-left-radius:4px;-webkit-border-radius: 1px;-moz-border-radius: 4px;-ms-border-radius: 4px;-o-border-radius: 4px;
+position: relative;border-radius: 2px;margin-top:-16px;overflow-y:scroll;}
+
+.edit-box1{background:#ccc;width:250px;height: auto;bottom:0;top:0;border-top: 1px solid #aaa;border-bottom-color:#fff;
+border-bottom-left-radius:4px;-webkit-border-radius: 1px;-moz-border-radius: 4px;-ms-border-radius: 4px;-o-border-radius: 4px;
+position: relative;border-radius: 2px;position: absolute;margin-top:0;overflow-y:scroll;}
+
+.edit-input{width: 260px;height: 35px;  position: relative; padding-left: 15px;color: rgb(73, 72, 72);font-size: 16px;border: 0px none;
+background-color:#fff;border:solid #ccc 1px;}
+.edit-input:focus{outline: none;border-color: #1c7bcc;}
+.chatheader-img{width: 19px;height: 15px;
+margin-top: 1px;position:relative;float:left;margin-left:0px;}
+.chatheader-img1{width: 19px;height: 15px;
+margin-top: 5px;position:relative;float:right;right:20%;}
+
+.siz{width: 15px;height: 16px;cursor:pointer;}
+.minus{float:right;margin-right:30px;margin-top: -12px;
+font-size: 36px;}
+.minus:hover,.close:hover {opacity: .7;}
+.close{float:right;margin-right:-43px;margin-top: -2px;opacity: 1;font-size: 20px;}
+#cwindow .ans, #cwindow .ques{display: block;font-size: 16px;}
+.msgAppend{font-size: 18px;margin-left: 10px;margin-top: 5px;overflow-wrap: break-word;}
+.msgLeft{font-size: 18px;margin-left: 10px;margin-top: 5px;}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function()
+{
+    var windowHeight;
+    var myBottom;
+    var newPosition;
+    $(".chatheader").css({'cursor':'default'});
+    var chatHeight = $(".chat-container").css("top");
+    $( ".chatheader" ).stop();
+    $(".minus" ).click(function (e) 
+    {
+        windowHeight = $(window).height();
+        myBottom = 60;
+        newPosition = windowHeight - myBottom;
+        //alert(a);
+        $('.chat-container').css('top','80%');
+        $('.chat-container').animate({top:newPosition},500);
+        $(".chatheader").css({'cursor':'pointer'});
+        $('.chatheader').addClass('chathead');
+        e.stopPropagation();
+
+    });
+    $(document).on('click','.chathead',function()
+    {       
+        var windowHeight1 = $(window).height();
+        var chatheader = $(".chat-container").height();
+        var chatHeight = windowHeight1 - 368;
+        //alert(chatHeight);
+        $(".chat-container").animate({top:chatHeight},500);
+        $('.chat-container').css("position","absolute").css("bottom","0");
+        $(".chatheader").css({'cursor':'default'});
+    });
+    $("#message").keyup(function(e) 
+    {
+    	if(e.keyCode==13)
+    	{
+    		$("#sendMsg").click();
+    	}
+    }); 
+});           
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+    	$(document).ready(function()
+    	{
+    		var socket = io.connect("127.0.0.1:1337");
+    		
+    		var username = prompt("Whats your Name");
+    		//emitting msg to server
+    		$("#sendMsg").click(function()
+    		{
+    			var message = $("#message").val();
+    			//alert(message);
+    			$("#message").val("");
+    			var obj = {"username":username,"msg":message};
+    			socket.emit("userMsg",obj);
+    		});
+    		// listening to updateMsg from server emit
+    		socket.on("updateMsg",function(data) 
+    		{
+    			$("#messageContainer").append("<div class='msgAppend'>"+data.username+": "+data.msg+"</div>");	
+    		});
+    		socket.on("leftMsg",function(data) 
+    		{
+    				$("#messageContainer").append("<div class='msgLeft'>"+data+"</div>");
+    				//console.log(data);
+    		});
+    		$(".close").click(function()
+    		{
+		    	socket.disconnect(); 
+        		$(".chat-container").css("visibility","hidden");
+    		}); 
+    	});
+    </script>
   </head>
 <body>
+	<h1 align="center">Chat here</h1>
+<div id="cwrapper" class="chat-container">
+    <h2 class="chatheader" style="cursor: pointer;">
+        <span style="font-size:16px;margin-left:-90px">Chat here</span>
+        <span class="minus siz">-</span> <span class="close siz">x</span>
+        <div style="clear:both"></div>
+    </h2>
+    <div id="cwindow" class="edit-box">
+        <div id="messageContainer"></div>
+    </div>
+    <div style="clear:both"></div>
+        <input type="text" id="message" class="input edit-input" placeholder="Send a message"/>
+        <button id="sendMsg" style="display:none"></button>
+</div>	
 </body>
 </html>
