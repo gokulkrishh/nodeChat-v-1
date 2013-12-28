@@ -15,19 +15,36 @@ app.get('/',function(req,res)
 	res.sendfile(__dirname + '/index.html');
 	//console.log(__dirname);
 });
+var users = 0;
+var usrnames = {};
 io.sockets.on("connection",function(socket) 
 {
 	//console.log(socket);
+	clientConnect(socket);
+function clientConnect(socket)
+{
+	users = users + 1;
+	io.sockets.emit("onlineUsers",{userOnline:users}); //sending msg to only user who connected to that socket
+	socket.on("userName",function(name)
+	{
+		socket.username = name;
+		usrnames[name] = name;
+		//console.log("user name is",username);
+		io.sockets.emit("leftMsg",usrnames);
+		//console.log(usrnames.nameUser);
+	});
 	socket.on("userMsg",function(content) //listening to user msg userMsg
 	{
-		//io.sockets.emit("updateMsg","A user joined chat");
-		io.sockets.emit("updateMsg",content); //sending msg to only user who connected to that socket
-		//console.log(content);// it will return user emitted msg
-		socket.on("disconnect",function(){clientDisconnect(content)});
+		io.sockets.emit("updateMsg",content,socket.username);
 	});
-});
-//disconnect funz. if user left the connection the below msg will come
-function clientDisconnect(content) 
-{
-	io.sockets.emit("leftMsg",content.username + ' left chat');
+	//console.log(usrnames.name);
 }
+socket.on("disconnect",function()
+{
+	users = users - 1;
+	delete usrnames[socket.username];// deleting the username in socket
+	io.sockets.emit("onlineUsers",{userOnline:users});
+	io.sockets.emit("leftMsg",usrnames);
+	console.log("is",usrnames);
+});
+});
