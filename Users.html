@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Connection Counter</title>
+    <title>No of User</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="socket.io/socket.io.js"></script>
     <script>
-      function msgReceived(msg){
+      $(document).ready(function () 
+      {
+        var socket = io.connect('http://localhost:1337');
+        socket.on('message1', function(msg)
+        {
+            msgReceived(msg);
+            //alert(msg.clients); will increment for each connection
+        });
+           $clientCounter = $("#client_count");
+      });
+      function msgReceived(msg)
+      {
         $clientCounter.html(msg.clients);
       }
- 
-      $(document).ready(function () {
-        $clientCounter = $("#client_count")
- 
-        var socket = io.connect('http://localhost:1337');
-        socket.on('message', function(msg){msgReceived(msg)});
-      });
     </script>
   </head>
   <body>

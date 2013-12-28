@@ -12,25 +12,25 @@ var io = socket.listen(server); */
 
 app.get('/',function(req,res) 
 {
-	res.sendfile(__dirname + '/Users.html');// send a file in current dir that is index.html
-	//console.log(http.createServer(app));
+  res.sendfile(__dirname + '/Users.html');// send a file in current dir that is index.html
+  //console.log(http.createServer(app));
 });
 var activeClients = 0;
  
 io.sockets.on('connection', function(socket) // initialize connection from client and socket arg is used for further
 {
-	clientConnect(socket); //socker arg is passed to funz
+  clientConnect(socket); //socker arg is passed to funz
+  console.log(socket);
 }); 
  
 function clientConnect(socket){
   activeClients +=1;
-  io.sockets.emit('message', {clients:activeClients}); //will emit the msg
-
+  io.sockets.emit('message1', {clients:activeClients}); //will emit the msg
+  
   socket.on('disconnect', function(){clientDisconnect()});
 }
- 
 function clientDisconnect(){
   activeClients -=1;
-  io.sockets.emit('message', {clients:activeClients});
+  io.sockets.emit('message1', {clients:activeClients});
 }
 
