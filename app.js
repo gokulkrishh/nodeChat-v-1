@@ -30,7 +30,7 @@ function clientConnect(socket)
 		socket.username = name;
 		usrnames[name] = name;
 		//console.log("user name is",username);
-		io.sockets.emit("leftMsg",usrnames);
+		io.sockets.emit("leftUser",usrnames);
 		//console.log(usrnames.nameUser);
 	});
 	socket.on("userMsg",function(content) //listening to user msg userMsg
@@ -44,7 +44,7 @@ socket.on("disconnect",function()
 	users = users - 1;
 	delete usrnames[socket.username];// deleting the username in socket
 	io.sockets.emit("onlineUsers",{userOnline:users});
-	io.sockets.emit("leftMsg",usrnames);
+	io.sockets.emit("leftUser",usrnames);
 	console.log("is",usrnames);
 });
 });

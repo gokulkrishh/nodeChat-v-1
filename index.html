@@ -82,7 +82,6 @@ $(document).ready(function()
     	$(document).ready(function()
     	{
     		var socket = io.connect("127.0.0.1:1337");
-    		
     		var username = prompt("Whats your Name");
     		socket.emit("userName",username);
     		$user = $("#onUsers");
@@ -112,7 +111,7 @@ $(document).ready(function()
     		{
     			$user.html(user.userOnline);
     		}
-    		socket.on("leftMsg",function(data) 
+    		socket.on("leftUser",function(data) 
     		{
     			$("#userContainer").empty();
     			//console.log(data);
