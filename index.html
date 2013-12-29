@@ -85,6 +85,7 @@ $(document).ready(function()
     		var username = prompt("Whats your Name");
     		socket.emit("userName",username);
     		$user = $("#onUsers");
+            
     		//emitting msg to server
     		$("#sendMsg").click(function()
     		{

@@ -29,6 +29,7 @@ function clientConnect(socket)
 	{
 		socket.username = name;
 		usrnames[name] = name;
+		
 		//console.log("user name is",username);
 		io.sockets.emit("leftUser",usrnames);
 		//console.log(usrnames.nameUser);
